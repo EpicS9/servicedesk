@@ -2,68 +2,50 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IT Service Desk — Incident Management System</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <!-- Top Navigation Bar (Responsive Atlassian / Jira Style) -->
+    <!-- Top Navigation Bar (Atlassian / Jira Style) -->
     <header class="app-header">
-        <div class="header-main">
-            <div class="header-left">
-                <div class="app-logo">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
-                    <span>ServiceDesk</span>
-                </div>
-                <span class="project-tag">IT Operations</span>
+        <div class="header-left">
+            <div class="app-logo">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+                <span>ServiceDesk</span>
             </div>
-
-            <!-- Desktop Navigation Links -->
-            <nav class="main-nav desktop-only">
+            <span class="project-tag">IT Operations</span>
+            
+            <nav class="main-nav">
                 <button class="nav-link active" data-tab="queue-tab">Queue</button>
                 <button class="nav-link" data-tab="analytics-tab">Reports & Workload</button>
                 <button class="nav-link" data-tab="bugs-tab">Bugs & Defects</button>
                 <button class="nav-link" data-tab="sql-tab">SQL Reference</button>
                 <button class="nav-link" data-tab="oop-tab">OOP Architecture</button>
             </nav>
-
-            <div class="header-right">
-                <!-- Search bar (Desktop) -->
-                <div class="header-search desktop-only">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                    <input type="text" id="global-search" placeholder="Search tickets, #ID, summary..." oninput="handleSearch()">
-                </div>
-
-                <!-- Acting Persona Picker -->
-                <div class="persona-picker">
-                    <span class="persona-label">User:</span>
-                    <select id="active-user-select" onchange="handleUserChange(event)">
-                        <!-- Populated dynamically -->
-                    </select>
-                </div>
-
-                <button class="btn btn-primary btn-sm create-btn" onclick="openNewTicketModal()">+ Ticket</button>
-            </div>
         </div>
 
-        <!-- Mobile Secondary Navigation Bar (Horizontal Scrolling Tabs) -->
-        <div class="mobile-subbar mobile-only">
-            <div class="mobile-search-wrapper">
+        <div class="header-right">
+            <!-- Search bar -->
+            <div class="header-search">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-                <input type="text" id="global-search-mobile" placeholder="Search by title, #ID..." oninput="handleMobileSearch(event)">
+                <input type="text" id="global-search" placeholder="Search by title, #ID, or summary..." oninput="handleSearch()">
             </div>
-            <nav class="mobile-nav-scroll">
-                <button class="nav-link active" data-tab="queue-tab">Queue</button>
-                <button class="nav-link" data-tab="analytics-tab">Reports</button>
-                <button class="nav-link" data-tab="bugs-tab">Bugs & Defects</button>
-                <button class="nav-link" data-tab="sql-tab">SQL Reference</button>
-                <button class="nav-link" data-tab="oop-tab">OOP Blueprint</button>
-            </nav>
+
+            <!-- Acting Persona -->
+            <div class="persona-picker">
+                <span class="persona-label">User:</span>
+                <select id="active-user-select" onchange="handleUserChange(event)">
+                    <!-- Populated dynamically -->
+                </select>
+            </div>
+
+            <button class="btn btn-primary btn-sm" onclick="openNewTicketModal()">Create Ticket</button>
         </div>
     </header>
 
     <!-- Main Workspace Container -->
-    <main class="app-body">
+    <div class="app-body">
         
         <!-- ==========================================
              TAB 1: INCIDENT QUEUE (Jira Service Desk Style)
@@ -80,7 +62,7 @@
                             <option value="UNASSIGNED">Unassigned</option>
                             <option value="ASSIGNED_TO_ME">Assigned to me</option>
                             <option value="OPEN_ISSUES">Open & In Progress</option>
-                            <option value="CRITICAL_HIGH">Critical & High</option>
+                            <option value="CRITICAL_HIGH">Critical & High Priority</option>
                             <option value="RESOLVED">Resolved / Closed</option>
                         </select>
                     </div>
@@ -113,20 +95,20 @@
                 </div>
             </div>
 
-            <!-- Ticket Table (Responsive with touch scroll) -->
-            <div class="table-card table-responsive">
+            <!-- Ticket Table -->
+            <div class="table-card">
                 <table class="grid-table">
                     <thead>
                         <tr>
-                            <th width="90">Key</th>
-                            <th width="85">Priority</th>
-                            <th style="min-width: 220px;">Summary</th>
-                            <th width="130">Category</th>
-                            <th width="130">Reporter</th>
-                            <th width="140">Assignee</th>
-                            <th width="120">Status</th>
-                            <th width="120">Created</th>
-                            <th width="70"></th>
+                            <th width="100">Key</th>
+                            <th width="90">Priority</th>
+                            <th>Summary</th>
+                            <th width="140">Category</th>
+                            <th width="150">Reporter</th>
+                            <th width="160">Assignee</th>
+                            <th width="130">Status</th>
+                            <th width="140">Created</th>
+                            <th width="80"></th>
                         </tr>
                     </thead>
                     <tbody id="tickets-table-body">
@@ -145,7 +127,7 @@
                 <p>Operational reports and resolution time analytics derived from database records.</p>
             </div>
 
-            <!-- KPI Row (Responsive Grid) -->
+            <!-- KPI Row -->
             <div class="kpi-row">
                 <div class="kpi-box">
                     <div class="kpi-num" id="kpi-total">0</div>
@@ -165,7 +147,7 @@
                 </div>
                 <div class="kpi-box">
                     <div class="kpi-num text-green" id="kpi-resolution-time">0h</div>
-                    <div class="kpi-title">Avg Resolution</div>
+                    <div class="kpi-title">Avg Resolution Time</div>
                 </div>
                 <div class="kpi-box">
                     <div class="kpi-num" id="kpi-bugs">0</div>
@@ -173,7 +155,7 @@
                 </div>
             </div>
 
-            <!-- Two-column / Responsive Report Grid -->
+            <!-- Two-column Report Grid -->
             <div class="reports-grid">
                 
                 <div class="report-panel">
@@ -181,20 +163,18 @@
                         <h3>Support Engineer Workload</h3>
                         <span class="panel-desc">Active tickets assigned</span>
                     </div>
-                    <div class="table-responsive">
-                        <table class="report-table">
-                            <thead>
-                                <tr>
-                                    <th>Engineer Name</th>
-                                    <th width="100">Active</th>
-                                    <th width="140">Capacity</th>
-                                </tr>
-                            </thead>
-                            <tbody id="report-workload-body">
-                                <!-- Populated dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th>Engineer Name</th>
+                                <th width="120">Active Tickets</th>
+                                <th width="160">Capacity</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-workload-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
                 </div>
 
                 <div class="report-panel">
@@ -202,20 +182,18 @@
                         <h3>Tickets by Priority</h3>
                         <span class="panel-desc">Severity distribution</span>
                     </div>
-                    <div class="table-responsive">
-                        <table class="report-table">
-                            <thead>
-                                <tr>
-                                    <th>Priority</th>
-                                    <th width="80">Count</th>
-                                    <th width="140">Share</th>
-                                </tr>
-                            </thead>
-                            <tbody id="report-priority-body">
-                                <!-- Populated dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th>Priority</th>
+                                <th width="120">Count</th>
+                                <th width="160">Share</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-priority-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
                 </div>
 
                 <div class="report-panel">
@@ -223,20 +201,18 @@
                         <h3>Tickets by Category</h3>
                         <span class="panel-desc">Infrastructure, Database & App breakdowns</span>
                     </div>
-                    <div class="table-responsive">
-                        <table class="report-table">
-                            <thead>
-                                <tr>
-                                    <th>Category</th>
-                                    <th width="80">Count</th>
-                                    <th width="140">Share</th>
-                                </tr>
-                            </thead>
-                            <tbody id="report-category-body">
-                                <!-- Populated dynamically -->
-                            </tbody>
-                        </table>
-                    </div>
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th width="120">Count</th>
+                                <th width="160">Share</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-category-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
                 </div>
 
                 <div class="report-panel">
@@ -245,7 +221,7 @@
                         <span class="panel-desc">Direct database inspection</span>
                     </div>
                     <div class="db-link-box">
-                        <p>Connected to an embedded H2 database (or PostgreSQL when running with the <code>postgres</code> profile).</p>
+                        <p>The system is connected to an embedded H2 database (or PostgreSQL when running with the <code>postgres</code> profile).</p>
                         <p style="margin-top: 8px;"><strong>JDBC URL:</strong> <code>jdbc:h2:mem:servicedeskdb</code> | <strong>User:</strong> <code>sa</code></p>
                         <div style="margin-top: 14px;">
                             <a href="/h2-console" target="_blank" class="btn btn-default btn-sm">Open H2 Web Console &rarr;</a>
@@ -265,18 +241,18 @@
                 <p>Support cases escalated into formal engineering defects with reproduction steps and stack traces.</p>
             </div>
 
-            <div class="table-card table-responsive">
+            <div class="table-card">
                 <table class="grid-table">
                     <thead>
                         <tr>
-                            <th width="90">Bug Key</th>
-                            <th width="85">Severity</th>
-                            <th style="min-width: 200px;">Summary</th>
-                            <th width="110">Env</th>
-                            <th width="140">Developer</th>
-                            <th width="110">Status</th>
-                            <th width="120">Created</th>
-                            <th width="110">Update</th>
+                            <th width="100">Bug Key</th>
+                            <th width="90">Severity</th>
+                            <th>Summary</th>
+                            <th width="120">Environment</th>
+                            <th width="160">Assigned Developer</th>
+                            <th width="130">Status</th>
+                            <th width="140">Created</th>
+                            <th width="120">Update Status</th>
                         </tr>
                     </thead>
                     <tbody id="bugs-table-body">
@@ -292,7 +268,7 @@
         <section id="sql-tab" class="tab-content">
             <div class="content-header">
                 <h2>SQL Queries & Analytics Reference</h2>
-                <p>Core SQL and JPQL queries executed by the application repository layer for technical review.</p>
+                <p>Core SQL and JPQL queries executed by the application repository layer for technical interview review.</p>
             </div>
 
             <div class="sql-grid">
@@ -331,7 +307,7 @@ ORDER BY active_tickets DESC;</code></pre>
                 <div class="sql-box">
                     <div class="sql-box-header">
                         <h4>3. Average Resolution Time (Timestamp Arithmetic)</h4>
-                        <span class="sql-badge">SQL / Date Math</span>
+                        <span class="sql-badge">SQL / Date Arithmetic</span>
                     </div>
                     <pre><code>SELECT AVG(EXTRACT(EPOCH FROM (resolved_at - created_at)) / 3600.0) AS avg_hours
 FROM tickets
@@ -406,12 +382,12 @@ LEFT JOIN bug_reports b ON b.ticket_id = t.id;</code></pre>
             </div>
         </section>
 
-    </main>
+    </div>
 
     <!-- ==============================================================
-         MODAL 1: CREATE TICKET (Responsive)
+         MODAL 1: CREATE TICKET (Clean Jira Style)
          ============================================================== -->
-    <div id="new-ticket-modal" class="modal-overlay hidden" onclick="handleBackdropClick(event, 'new-ticket-modal')">
+    <div id="new-ticket-modal" class="modal-overlay hidden">
         <div class="modal-window">
             <div class="modal-header">
                 <h3>Create Support Ticket</h3>
@@ -462,9 +438,9 @@ LEFT JOIN bug_reports b ON b.ticket_id = t.id;</code></pre>
     </div>
 
     <!-- ==============================================================
-         MODAL 2: TICKET DETAIL VIEW (Responsive 2-pane / 1-pane on mobile)
+         MODAL 2: TICKET DETAIL VIEW (Clean Jira/Zendesk Detail View)
          ============================================================== -->
-    <div id="ticket-detail-modal" class="modal-overlay hidden" onclick="handleBackdropClick(event, 'ticket-detail-modal')">
+    <div id="ticket-detail-modal" class="modal-overlay hidden">
         <div class="modal-window modal-wide">
             
             <div class="ticket-view-header">
@@ -489,7 +465,7 @@ LEFT JOIN bug_reports b ON b.ticket_id = t.id;</code></pre>
                         <div id="detail-description" class="ticket-desc-text"></div>
                     </div>
 
-                    <!-- Troubleshooting & Root Cause Box (Post-Mortem Style) -->
+                    <!-- Troubleshooting & Root Cause Box (Jira Post-Mortem Style) -->
                     <div id="detail-resolution-box" class="ticket-section rca-section hidden">
                         <div class="section-label rca-label-title">
                             <span>Root Cause Analysis & Resolution</span>
@@ -625,7 +601,7 @@ LEFT JOIN bug_reports b ON b.ticket_id = t.id;</code></pre>
     <!-- ==============================================================
          MODAL 3: LOG TROUBLESHOOTING (RCA Form)
          ============================================================== -->
-    <div id="troubleshoot-modal" class="modal-overlay hidden" onclick="handleBackdropClick(event, 'troubleshoot-modal')">
+    <div id="troubleshoot-modal" class="modal-overlay hidden">
         <div class="modal-window">
             <div class="modal-header">
                 <h3>Document Technical Resolution</h3>
@@ -664,7 +640,7 @@ LEFT JOIN bug_reports b ON b.ticket_id = t.id;</code></pre>
     <!-- ==============================================================
          MODAL 4: CONVERT TICKET TO BUG
          ============================================================== -->
-    <div id="convert-bug-modal" class="modal-overlay hidden" onclick="handleBackdropClick(event, 'convert-bug-modal')">
+    <div id="convert-bug-modal" class="modal-overlay hidden">
         <div class="modal-window">
             <div class="modal-header">
                 <h3>Escalate Incident to QA Bug</h3>

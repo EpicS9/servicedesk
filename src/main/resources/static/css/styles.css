@@ -1,6 +1,5 @@
 /* =============================================================================
-   IT Service Desk — Responsive Enterprise UI (Atlassian / Jira Inspired)
-   Supports Desktop, Tablet, and Mobile Viewports
+   IT Service Desk — Clean Enterprise UI (Atlassian / Jira Inspired)
    ============================================================================= */
 
 :root {
@@ -47,12 +46,6 @@
     padding: 0;
 }
 
-html, body {
-    width: 100%;
-    min-height: 100%;
-    overflow-x: hidden;
-}
-
 body {
     background-color: var(--bg-page);
     color: var(--text-primary);
@@ -60,37 +53,27 @@ body {
     font-size: 14px;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
-    -webkit-tap-highlight-color: transparent;
 }
 
-/* =============================================================================
-   1. Responsive Header (Desktop & Mobile)
-   ============================================================================= */
+/* 1. Header (Atlassian Style) */
 .app-header {
     background-color: var(--navy-header);
     color: #ffffff;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    width: 100%;
-}
-
-.header-main {
     height: 52px;
     padding: 0 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 12px;
-    max-width: 1400px;
-    margin: 0 auto;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 
 .header-left {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 20px;
 }
 
 .app-logo {
@@ -100,7 +83,6 @@ body {
     font-weight: 700;
     font-size: 16px;
     letter-spacing: -0.2px;
-    white-space: nowrap;
 }
 
 .project-tag {
@@ -111,7 +93,6 @@ body {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    white-space: nowrap;
 }
 
 .main-nav {
@@ -130,7 +111,6 @@ body {
     cursor: pointer;
     font-family: inherit;
     transition: all 0.15s ease;
-    white-space: nowrap;
 }
 
 .nav-link:hover {
@@ -147,7 +127,7 @@ body {
 .header-right {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
 }
 
 .header-search {
@@ -171,7 +151,6 @@ body {
     width: 220px;
     font-family: inherit;
     color: var(--text-primary);
-    transition: width 0.2s ease;
 }
 
 .header-search input:focus {
@@ -189,7 +168,6 @@ body {
 .persona-label {
     font-size: 12px;
     color: rgba(255, 255, 255, 0.8);
-    display: none;
 }
 
 .persona-picker select {
@@ -200,71 +178,7 @@ body {
     font-size: 12px;
     font-family: inherit;
     color: var(--text-primary);
-    max-width: 140px;
-    text-overflow: ellipsis;
 }
-
-/* Mobile Secondary Bar (Sticky horizontal tab scroll) */
-.mobile-subbar {
-    background: #053b8c;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
-    padding: 6px 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-
-.mobile-search-wrapper {
-    position: relative;
-    display: flex;
-    align-items: center;
-    width: 100%;
-}
-
-.mobile-search-wrapper svg {
-    position: absolute;
-    left: 10px;
-    color: var(--text-muted);
-}
-
-.mobile-search-wrapper input {
-    width: 100%;
-    background: #ffffff;
-    border: 1px solid transparent;
-    border-radius: 3px;
-    padding: 6px 10px 6px 30px;
-    font-size: 13px;
-    font-family: inherit;
-    color: var(--text-primary);
-}
-
-.mobile-nav-scroll {
-    display: flex;
-    gap: 6px;
-    overflow-x: auto;
-    white-space: nowrap;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-    padding-bottom: 2px;
-}
-
-.mobile-nav-scroll::-webkit-scrollbar {
-    display: none;
-}
-
-.mobile-nav-scroll .nav-link {
-    font-size: 12px;
-    padding: 5px 10px;
-    background: rgba(255, 255, 255, 0.1);
-}
-
-.mobile-nav-scroll .nav-link.active {
-    background: rgba(0, 0, 0, 0.35);
-}
-
-/* Visibility toggles */
-.desktop-only { display: flex; }
-.mobile-only { display: none; }
 
 /* Buttons */
 .btn {
@@ -280,7 +194,6 @@ body {
     justify-content: center;
     text-decoration: none;
     transition: background 0.15s ease;
-    min-height: 32px;
 }
 
 .btn-primary {
@@ -305,21 +218,17 @@ body {
 .btn-sm {
     padding: 4px 10px;
     font-size: 12px;
-    min-height: 28px;
 }
 
 .btn-block {
     width: 100%;
 }
 
-/* =============================================================================
-   2. Workspace Body & Content Sections
-   ============================================================================= */
+/* 2. Workspace Body */
 .app-body {
     max-width: 1320px;
     margin: 20px auto;
-    padding: 0 16px 40px 16px;
-    width: 100%;
+    padding: 0 20px;
 }
 
 .tab-content {
@@ -346,27 +255,22 @@ body {
     margin-top: 2px;
 }
 
-/* =============================================================================
-   3. Incident Queue Toolbar & Table
-   ============================================================================= */
+/* 3. Incident Queue Toolbar & Table */
 .queue-toolbar {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 4px 4px 0 0;
-    padding: 10px 14px;
+    padding: 10px 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
     border-bottom: none;
 }
 
 .filter-controls {
     display: flex;
     align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
+    gap: 12px;
 }
 
 .filter-item {
@@ -379,18 +283,16 @@ body {
 .filter-item label {
     font-weight: 500;
     color: var(--text-secondary);
-    font-size: 12px;
 }
 
 .filter-item select, .form-select {
     background: var(--bg-input);
     border: 1px solid var(--border-color);
     border-radius: 3px;
-    padding: 6px 8px;
+    padding: 5px 8px;
     font-size: 13px;
     color: var(--text-primary);
     font-family: inherit;
-    min-height: 32px;
 }
 
 .filter-item select:focus, .form-select:focus, .form-input:focus, .form-textarea:focus {
@@ -403,27 +305,20 @@ body {
 .toolbar-right {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-left: auto;
+    gap: 12px;
 }
 
 .text-muted {
     color: var(--text-secondary);
     font-size: 12px;
-    white-space: nowrap;
 }
 
-/* Responsive Table Wrapper */
-.table-responsive {
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}
-
+/* Data Tables (Jira / GitHub style) */
 .table-card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 0 0 4px 4px;
+    overflow-x: auto;
 }
 
 .grid-table {
@@ -431,7 +326,6 @@ body {
     border-collapse: collapse;
     font-size: 13px;
     text-align: left;
-    white-space: nowrap;
 }
 
 .grid-table thead {
@@ -449,7 +343,6 @@ body {
 .grid-table tbody tr {
     border-bottom: 1px solid var(--border-color);
     cursor: pointer;
-    transition: background 0.1s ease;
 }
 
 .grid-table tbody tr:hover {
@@ -468,7 +361,7 @@ body {
     font-size: 12px;
 }
 
-/* Badges */
+/* Clean Badges (Jira Style) */
 .badge-priority {
     font-size: 11px;
     font-weight: 700;
@@ -488,7 +381,6 @@ body {
     border-radius: 3px;
     text-transform: uppercase;
     display: inline-block;
-    white-space: nowrap;
 }
 
 .status-OPEN { background: var(--status-blue-bg); color: var(--status-blue-text); }
@@ -504,16 +396,13 @@ body {
     padding: 1px 6px;
     border-radius: 3px;
     margin-left: 6px;
-    white-space: nowrap;
 }
 
-/* =============================================================================
-   4. Reports & KPI Analytics
-   ============================================================================= */
+/* 4. KPI Cards Row */
 .kpi-row {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 12px;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px;
     margin-bottom: 20px;
 }
 
@@ -521,18 +410,18 @@ body {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 4px;
-    padding: 14px 10px;
+    padding: 16px;
     text-align: center;
 }
 
 .kpi-num {
-    font-size: 24px;
+    font-size: 26px;
     font-weight: 700;
     color: var(--text-primary);
 }
 
 .kpi-title {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 500;
     color: var(--text-secondary);
     margin-top: 4px;
@@ -546,30 +435,30 @@ body {
 /* Reports Grid */
 .reports-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
 }
 
 .report-panel {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 4px;
-    padding: 16px;
+    padding: 18px;
 }
 
 .panel-head {
-    margin-bottom: 12px;
+    margin-bottom: 14px;
     border-bottom: 1px solid var(--border-color);
     padding-bottom: 8px;
 }
 
 .panel-head h3 {
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
 }
 
 .panel-desc {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--text-secondary);
 }
 
@@ -581,14 +470,14 @@ body {
 
 .report-table th {
     text-align: left;
-    padding: 6px 8px;
+    padding: 6px 10px;
     color: var(--text-secondary);
     font-size: 11px;
     border-bottom: 1px solid var(--border-color);
 }
 
 .report-table td {
-    padding: 8px 8px;
+    padding: 8px 10px;
     border-bottom: 1px solid #f4f5f7;
 }
 
@@ -616,23 +505,20 @@ body {
     padding: 2px 6px;
     border-radius: 3px;
     color: var(--text-primary);
-    word-break: break-all;
 }
 
-/* =============================================================================
-   5. SQL Reference & OOP Grids
-   ============================================================================= */
+/* 5. SQL Reference Grid */
 .sql-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
 }
 
 .sql-box {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 4px;
-    padding: 16px;
+    padding: 18px;
 }
 
 .sql-box-header {
@@ -640,11 +526,10 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
-    gap: 8px;
 }
 
 .sql-box-header h4 {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
 }
 
@@ -655,14 +540,13 @@ body {
     padding: 2px 6px;
     border-radius: 3px;
     font-weight: 600;
-    white-space: nowrap;
 }
 
 .sql-box pre {
     background: #f4f5f7;
     border: 1px solid var(--border-color);
     border-radius: 3px;
-    padding: 10px;
+    padding: 12px;
     font-family: var(--font-mono);
     font-size: 12px;
     color: #091e42;
@@ -675,31 +559,32 @@ body {
     color: var(--text-secondary);
 }
 
+/* 6. OOP Architecture Grid */
 .oop-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
 }
 
 .oop-card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 4px;
-    padding: 16px;
+    padding: 18px;
 }
 
 .oop-card h4 {
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
     color: var(--primary-blue);
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
 
 .oop-card p {
     font-size: 13px;
     color: var(--text-secondary);
     line-height: 1.5;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .code-snippet {
@@ -710,46 +595,41 @@ body {
     font-family: var(--font-mono);
     font-size: 11px;
     color: var(--text-primary);
-    overflow-x: auto;
 }
 
-/* =============================================================================
-   6. Modals & Dialogs (Responsive)
-   ============================================================================= */
+/* 7. Clean Modals & Popups */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(9, 30, 66, 0.6);
+    background: rgba(9, 30, 66, 0.54);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1000;
-    padding: 12px;
 }
 
 .modal-window {
     background: #ffffff;
     border-radius: 4px;
     width: 100%;
-    max-width: 520px;
+    max-width: 540px;
     max-height: 90vh;
     overflow-y: auto;
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
-    margin: auto;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
 }
 
 .modal-wide {
     max-width: 960px;
-    height: 88vh;
+    height: 85vh;
     display: flex;
     flex-direction: column;
 }
 
 .modal-header {
-    padding: 14px 18px;
+    padding: 16px 20px;
     border-bottom: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
@@ -757,25 +637,23 @@ body {
 }
 
 .modal-header h3 {
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 600;
 }
 
 .modal-close {
     background: none;
     border: none;
-    font-size: 24px;
+    font-size: 22px;
     color: var(--text-secondary);
     cursor: pointer;
-    line-height: 1;
-    padding: 4px 8px;
 }
 
 .modal-body {
-    padding: 16px 18px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 14px;
 }
 
 .form-group {
@@ -808,7 +686,6 @@ body {
     font-size: 13px;
     font-family: inherit;
     color: var(--text-primary);
-    width: 100%;
 }
 
 .code-font {
@@ -817,7 +694,7 @@ body {
 }
 
 .modal-footer {
-    padding: 12px 18px;
+    padding: 14px 20px;
     border-top: 1px solid var(--border-color);
     display: flex;
     justify-content: flex-end;
@@ -825,24 +702,20 @@ body {
     background: #fafbfc;
 }
 
-/* =============================================================================
-   7. Jira-Style Ticket View Drawer Layout (Responsive)
-   ============================================================================= */
+/* 8. Jira-Style Ticket View Drawer Layout */
 .ticket-view-header {
-    padding: 12px 18px;
+    padding: 14px 24px;
     border-bottom: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
     background: #fafbfc;
-    flex-shrink: 0;
 }
 
 .ticket-header-meta {
     display: flex;
     align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
+    gap: 12px;
 }
 
 .ticket-view-body {
@@ -853,28 +726,27 @@ body {
 }
 
 .ticket-left-pane {
-    padding: 20px;
+    padding: 24px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 20px;
 }
 
 .ticket-right-pane {
     background: #fafbfc;
     border-left: 1px solid var(--border-color);
-    padding: 18px;
+    padding: 20px;
     overflow-y: auto;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 18px;
 }
 
 .ticket-title {
-    font-size: 17px;
+    font-size: 18px;
     font-weight: 600;
     color: var(--text-primary);
-    line-height: 1.4;
 }
 
 .ticket-section {
@@ -884,7 +756,7 @@ body {
 }
 
 .section-label {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     color: var(--text-secondary);
     text-transform: uppercase;
@@ -917,8 +789,6 @@ body {
     justify-content: space-between;
     color: #006644;
     border-bottom: 1px solid #abf5d1;
-    flex-wrap: wrap;
-    gap: 4px;
 }
 
 .rca-logged-meta {
@@ -949,7 +819,6 @@ body {
     font-size: 12px;
     color: #091e42;
     white-space: pre-wrap;
-    overflow-x: auto;
 }
 
 /* QA Bug Box */
@@ -965,14 +834,12 @@ body {
     justify-content: space-between;
     color: #825c00;
     border-bottom: 1px solid #ffe380;
-    flex-wrap: wrap;
-    gap: 4px;
 }
 
 .bug-split-row {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    gap: 12px;
     margin-top: 8px;
     font-size: 12px;
 }
@@ -981,8 +848,8 @@ body {
 .comments-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    margin-bottom: 8px;
+    gap: 10px;
+    margin-bottom: 10px;
 }
 
 .comment-card {
@@ -1004,8 +871,6 @@ body {
     font-size: 11px;
     color: var(--text-secondary);
     margin-bottom: 4px;
-    flex-wrap: wrap;
-    gap: 4px;
 }
 
 .comment-bar {
@@ -1013,8 +878,6 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-top: 6px;
-    flex-wrap: wrap;
-    gap: 8px;
 }
 
 .checkbox-inline {
@@ -1038,11 +901,11 @@ body {
 .sidebar-box {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 12px;
 }
 
 .sidebar-heading {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 700;
     color: var(--text-secondary);
     text-transform: uppercase;
@@ -1079,7 +942,7 @@ body {
     gap: 8px;
 }
 
-/* 8. Toast Box */
+/* 9. Toast Box */
 .toast-box {
     position: fixed;
     bottom: 20px;
@@ -1088,7 +951,6 @@ body {
     flex-direction: column;
     gap: 8px;
     z-index: 2000;
-    max-width: 90vw;
 }
 
 .toast {
@@ -1097,7 +959,7 @@ body {
     padding: 10px 16px;
     border-radius: 3px;
     font-size: 13px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     display: flex;
     align-items: center;
     gap: 10px;
@@ -1105,144 +967,4 @@ body {
 
 .hidden {
     display: none !important;
-}
-
-/* =============================================================================
-   9. MEDIA QUERIES (TABLET & MOBILE RESPONSIVE RULES)
-   ============================================================================= */
-
-/* Tablet & Smaller (< 992px) */
-@media (max-width: 992px) {
-    .desktop-only { display: none !important; }
-    .mobile-only { display: flex !important; }
-    
-    .persona-label { display: none; }
-    .persona-picker select { max-width: 120px; }
-
-    .reports-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .sql-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* Tablet / Large Phone (< 768px) */
-@media (max-width: 768px) {
-    .header-main {
-        padding: 0 12px;
-    }
-
-    .project-tag {
-        display: none;
-    }
-
-    .app-body {
-        margin: 12px auto;
-        padding: 0 10px 30px 10px;
-    }
-
-    .queue-toolbar {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .filter-controls {
-        flex-direction: column;
-        align-items: stretch;
-        width: 100%;
-    }
-
-    .filter-item {
-        width: 100%;
-        justify-content: space-between;
-    }
-
-    .filter-item select {
-        flex: 1;
-    }
-
-    .toolbar-right {
-        width: 100%;
-        justify-content: space-between;
-        margin-left: 0;
-        padding-top: 6px;
-        border-top: 1px solid var(--border-color);
-    }
-
-    /* Modal wide collapses to 1-column scrollable sheet */
-    .modal-wide {
-        max-width: 100%;
-        height: 94vh;
-    }
-
-    .ticket-view-body {
-        grid-template-columns: 1fr;
-        overflow-y: auto;
-        display: block;
-    }
-
-    .ticket-left-pane {
-        padding: 14px;
-        overflow-y: visible;
-    }
-
-    .ticket-right-pane {
-        border-left: none;
-        border-top: 1px solid var(--border-color);
-        padding: 14px;
-        background: #f4f5f7;
-        overflow-y: visible;
-    }
-
-    .bug-split-row {
-        grid-template-columns: 1fr;
-    }
-
-    .form-row {
-        grid-template-columns: 1fr;
-        gap: 8px;
-    }
-
-    .kpi-row {
-        grid-template-columns: repeat(3, 1fr);
-    }
-}
-
-/* Small Phone (< 480px) */
-@media (max-width: 480px) {
-    .kpi-row {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 8px;
-    }
-
-    .kpi-num {
-        font-size: 20px;
-    }
-
-    .kpi-title {
-        font-size: 10px;
-    }
-
-    .modal-overlay {
-        padding: 6px;
-    }
-
-    .modal-header {
-        padding: 12px 14px;
-    }
-
-    .modal-body {
-        padding: 12px 14px;
-    }
-
-    .modal-footer {
-        padding: 10px 14px;
-    }
-
-    .create-btn {
-        padding: 4px 8px;
-        font-size: 11px;
-    }
 }

@@ -1,7 +1,6 @@
 /**
  * IT Service Desk — Client Application
  * Enterprise Incident & Support Management
- * Supports Desktop, Tablet, and Mobile devices
  */
 
 let allUsers = [];
@@ -29,24 +28,16 @@ if (document.readyState === 'loading') {
     initApp();
 }
 
-// 1. Navigation Links (Sync desktop and mobile nav bars)
+// 1. Navigation Links
 function setupNavLinks() {
-    const allNavButtons = document.querySelectorAll('.nav-link');
-    allNavButtons.forEach(btn => {
+    const links = document.querySelectorAll('.nav-link');
+    links.forEach(btn => {
         btn.addEventListener('click', () => {
-            const targetId = btn.getAttribute('data-tab');
-
-            // Sync active state across all nav buttons (both desktop and mobile)
-            allNavButtons.forEach(b => {
-                if (b.getAttribute('data-tab') === targetId) {
-                    b.classList.add('active');
-                } else {
-                    b.classList.remove('active');
-                }
-            });
-
-            // Switch tab view
+            links.forEach(l => l.classList.remove('active'));
             document.querySelectorAll('.tab-content').forEach(p => p.classList.remove('active'));
+
+            btn.classList.add('active');
+            const targetId = btn.getAttribute('data-tab');
             const targetPane = document.getElementById(targetId);
             if (targetPane) {
                 targetPane.classList.add('active');
@@ -129,18 +120,13 @@ function formatRole(roleStr) {
 async function loadTickets() {
     const statusEl = document.getElementById('filter-status');
     const priorityEl = document.getElementById('filter-priority');
-    const desktopSearch = document.getElementById('global-search');
-    const mobileSearch = document.getElementById('global-search-mobile');
+    const searchEl = document.getElementById('global-search');
     const countLabel = document.getElementById('ticket-count-label');
     const tbody = document.getElementById('tickets-table-body');
 
     const status = statusEl ? statusEl.value : '';
     const priority = priorityEl ? priorityEl.value : '';
-    
-    // Check either desktop or mobile search query
-    let search = '';
-    if (desktopSearch && desktopSearch.value) search = desktopSearch.value.trim();
-    if (!search && mobileSearch && mobileSearch.value) search = mobileSearch.value.trim();
+    const search = searchEl ? searchEl.value.trim() : '';
 
     const params = new URLSearchParams();
     if (status) params.append('status', status);
@@ -238,12 +224,6 @@ function handleSearch() {
     searchTimeout = setTimeout(() => {
         loadTickets();
     }, 250);
-}
-
-function handleMobileSearch(e) {
-    const desktopSearch = document.getElementById('global-search');
-    if (desktopSearch) desktopSearch.value = e.target.value;
-    handleSearch();
 }
 
 // 4. Reports & Workload Tab
@@ -752,12 +732,6 @@ function openModal(id) {
 function closeModal(id) {
     const el = document.getElementById(id);
     if (el) el.classList.add('hidden');
-}
-
-function handleBackdropClick(e, id) {
-    if (e.target.classList.contains('modal-overlay')) {
-        closeModal(id);
-    }
 }
 
 function showToast(msg) {
