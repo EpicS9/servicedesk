@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Service Desk — Incident Management System</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <!-- Top Navigation Bar (Atlassian / Jira Style) -->
+    <header class="app-header">
+        <div class="header-left">
+            <div class="app-logo">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg>
+                <span>ServiceDesk</span>
+            </div>
+            <span class="project-tag">IT Operations</span>
+            
+            <nav class="main-nav">
+                <button class="nav-link active" data-tab="queue-tab">Queue</button>
+                <button class="nav-link" data-tab="analytics-tab">Reports & Workload</button>
+                <button class="nav-link" data-tab="bugs-tab">Bugs & Defects</button>
+                <button class="nav-link" data-tab="sql-tab">SQL Reference</button>
+                <button class="nav-link" data-tab="oop-tab">OOP Architecture</button>
+            </nav>
+        </div>
+
+        <div class="header-right">
+            <!-- Search bar -->
+            <div class="header-search">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <input type="text" id="global-search" placeholder="Search by title, #ID, or summary..." oninput="handleSearch()">
+            </div>
+
+            <!-- Acting Persona -->
+            <div class="persona-picker">
+                <span class="persona-label">User:</span>
+                <select id="active-user-select" onchange="handleUserChange(event)">
+                    <!-- Populated dynamically -->
+                </select>
+            </div>
+
+            <button class="btn btn-primary btn-sm" onclick="openNewTicketModal()">Create Ticket</button>
+        </div>
+    </header>
+
+    <!-- Main Workspace Container -->
+    <div class="app-body">
+        
+        <!-- ==========================================
+             TAB 1: INCIDENT QUEUE (Jira Service Desk Style)
+             ========================================== -->
+        <section id="queue-tab" class="tab-content active">
+            
+            <!-- Filter Toolbar -->
+            <div class="queue-toolbar">
+                <div class="filter-controls">
+                    <div class="filter-item">
+                        <label>Filter:</label>
+                        <select id="filter-view" onchange="applyQueueView(this.value)">
+                            <option value="ALL">All Tickets</option>
+                            <option value="UNASSIGNED">Unassigned</option>
+                            <option value="ASSIGNED_TO_ME">Assigned to me</option>
+                            <option value="OPEN_ISSUES">Open & In Progress</option>
+                            <option value="CRITICAL_HIGH">Critical & High Priority</option>
+                            <option value="RESOLVED">Resolved / Closed</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-item">
+                        <select id="filter-status" onchange="loadTickets()">
+                            <option value="">Status: All</option>
+                            <option value="OPEN">Open</option>
+                            <option value="IN_PROGRESS">In Progress</option>
+                            <option value="WAITING_FOR_USER">Waiting for User</option>
+                            <option value="RESOLVED">Resolved</option>
+                            <option value="CLOSED">Closed</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-item">
+                        <select id="filter-priority" onchange="loadTickets()">
+                            <option value="">Priority: All</option>
+                            <option value="CRITICAL">Critical</option>
+                            <option value="HIGH">High</option>
+                            <option value="MEDIUM">Medium</option>
+                            <option value="LOW">Low</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="toolbar-right">
+                    <span id="ticket-count-label" class="text-muted">Loading tickets...</span>
+                    <button class="btn btn-default btn-sm" onclick="loadTickets()">Refresh</button>
+                </div>
+            </div>
+
+            <!-- Ticket Table -->
+            <div class="table-card">
+                <table class="grid-table">
+                    <thead>
+                        <tr>
+                            <th width="100">Key</th>
+                            <th width="90">Priority</th>
+                            <th>Summary</th>
+                            <th width="140">Category</th>
+                            <th width="150">Reporter</th>
+                            <th width="160">Assignee</th>
+                            <th width="130">Status</th>
+                            <th width="140">Created</th>
+                            <th width="80"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tickets-table-body">
+                        <!-- Populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             TAB 2: REPORTS & WORKLOAD
+             ========================================== -->
+        <section id="analytics-tab" class="tab-content">
+            <div class="content-header">
+                <h2>Support Workload & SLA Metrics</h2>
+                <p>Operational reports and resolution time analytics derived from database records.</p>
+            </div>
+
+            <!-- KPI Row -->
+            <div class="kpi-row">
+                <div class="kpi-box">
+                    <div class="kpi-num" id="kpi-total">0</div>
+                    <div class="kpi-title">Total Tickets</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="kpi-num text-blue" id="kpi-open">0</div>
+                    <div class="kpi-title">Open / Triage</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="kpi-num text-orange" id="kpi-inprogress">0</div>
+                    <div class="kpi-title">In Progress</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="kpi-num text-red" id="kpi-critical">0</div>
+                    <div class="kpi-title">Critical Priority</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="kpi-num text-green" id="kpi-resolution-time">0h</div>
+                    <div class="kpi-title">Avg Resolution Time</div>
+                </div>
+                <div class="kpi-box">
+                    <div class="kpi-num" id="kpi-bugs">0</div>
+                    <div class="kpi-title">Escalated Bugs</div>
+                </div>
+            </div>
+
+            <!-- Two-column Report Grid -->
+            <div class="reports-grid">
+                
+                <div class="report-panel">
+                    <div class="panel-head">
+                        <h3>Support Engineer Workload</h3>
+                        <span class="panel-desc">Active tickets assigned</span>
+                    </div>
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th>Engineer Name</th>
+                                <th width="120">Active Tickets</th>
+                                <th width="160">Capacity</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-workload-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="report-panel">
+                    <div class="panel-head">
+                        <h3>Tickets by Priority</h3>
+                        <span class="panel-desc">Severity distribution</span>
+                    </div>
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th>Priority</th>
+                                <th width="120">Count</th>
+                                <th width="160">Share</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-priority-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="report-panel">
+                    <div class="panel-head">
+                        <h3>Tickets by Category</h3>
+                        <span class="panel-desc">Infrastructure, Database & App breakdowns</span>
+                    </div>
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th width="120">Count</th>
+                                <th width="160">Share</th>
+                            </tr>
+                        </thead>
+                        <tbody id="report-category-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="report-panel">
+                    <div class="panel-head">
+                        <h3>Database Console & Diagnostics</h3>
+                        <span class="panel-desc">Direct database inspection</span>
+                    </div>
+                    <div class="db-link-box">
+                        <p>The system is connected to an embedded H2 database (or PostgreSQL when running with the <code>postgres</code> profile).</p>
+                        <p style="margin-top: 8px;"><strong>JDBC URL:</strong> <code>jdbc:h2:mem:servicedeskdb</code> | <strong>User:</strong> <code>sa</code></p>
+                        <div style="margin-top: 14px;">
+                            <a href="/h2-console" target="_blank" class="btn btn-default btn-sm">Open H2 Web Console &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ==========================================
+             TAB 3: BUGS & DEFECTS (QA)
+             ========================================== -->
+        <section id="bugs-tab" class="tab-content">
+            <div class="content-header">
+                <h2>Bug & Defect Tracking</h2>
+                <p>Support cases escalated into formal engineering defects with reproduction steps and stack traces.</p>
+            </div>
+
+            <div class="table-card">
+                <table class="grid-table">
+                    <thead>
+                        <tr>
+                            <th width="100">Bug Key</th>
+                            <th width="90">Severity</th>
+                            <th>Summary</th>
+                            <th width="120">Environment</th>
+                            <th width="160">Assigned Developer</th>
+                            <th width="130">Status</th>
+                            <th width="140">Created</th>
+                            <th width="120">Update Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bugs-table-body">
+                        <!-- Populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ==========================================
+             TAB 4: SQL REFERENCE & INTERVIEW TALKING POINTS
+             ========================================== -->
+        <section id="sql-tab" class="tab-content">
+            <div class="content-header">
+                <h2>SQL Queries & Analytics Reference</h2>
+                <p>Core SQL and JPQL queries executed by the application repository layer for technical interview review.</p>
+            </div>
+
+            <div class="sql-grid">
+                
+                <div class="sql-box">
+                    <div class="sql-box-header">
+                        <h4>1. Open Tickets Grouped by Priority</h4>
+                        <span class="sql-badge">JPQL / Aggregate</span>
+                    </div>
+                    <pre><code>SELECT t.priority, COUNT(t)
+FROM Ticket t
+WHERE t.status != 'CLOSED'
+GROUP BY t.priority
+ORDER BY COUNT(t) DESC;</code></pre>
+                    <div class="sql-doc">
+                        <strong>Purpose:</strong> Identifies the distribution of unresolved incidents by urgency to prioritize triage resources.
+                    </div>
+                </div>
+
+                <div class="sql-box">
+                    <div class="sql-box-header">
+                        <h4>2. Engineer Active Workload (JOIN Query)</h4>
+                        <span class="sql-badge">SQL / INNER JOIN</span>
+                    </div>
+                    <pre><code>SELECT u.name AS engineer, COUNT(t.id) AS active_tickets
+FROM users u
+INNER JOIN tickets t ON t.assigned_to_id = u.id
+WHERE t.status IN ('OPEN', 'IN_PROGRESS', 'WAITING_FOR_USER')
+GROUP BY u.name
+ORDER BY active_tickets DESC;</code></pre>
+                    <div class="sql-doc">
+                        <strong>Purpose:</strong> Calculates the active support burden per engineer to assist in team capacity planning.
+                    </div>
+                </div>
+
+                <div class="sql-box">
+                    <div class="sql-box-header">
+                        <h4>3. Average Resolution Time (Timestamp Arithmetic)</h4>
+                        <span class="sql-badge">SQL / Date Arithmetic</span>
+                    </div>
+                    <pre><code>SELECT AVG(EXTRACT(EPOCH FROM (resolved_at - created_at)) / 3600.0) AS avg_hours
+FROM tickets
+WHERE resolved_at IS NOT NULL;</code></pre>
+                    <div class="sql-doc">
+                        <strong>Purpose:</strong> Measures Mean Time to Resolution (MTTR) in hours across completed support incidents.
+                    </div>
+                </div>
+
+                <div class="sql-box">
+                    <div class="sql-box-header">
+                        <h4>4. Defect Escalation Rate</h4>
+                        <span class="sql-badge">SQL / LEFT JOIN</span>
+                    </div>
+                    <pre><code>SELECT 
+    COUNT(t.id) AS total_tickets,
+    COUNT(b.id) AS converted_bugs,
+    ROUND((COUNT(b.id)::DECIMAL / COUNT(t.id)) * 100, 2) AS escalation_rate_pct
+FROM tickets t
+LEFT JOIN bug_reports b ON b.ticket_id = t.id;</code></pre>
+                    <div class="sql-doc">
+                        <strong>Purpose:</strong> Evaluates what proportion of customer support cases indicate underlying software defects.
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ==========================================
+             TAB 5: OOP ARCHITECTURE
+             ========================================== -->
+        <section id="oop-tab" class="tab-content">
+            <div class="content-header">
+                <h2>Java Object-Oriented Architecture</h2>
+                <p>Direct mapping of Core Java concepts implemented in the backend domain layer.</p>
+            </div>
+
+            <div class="oop-grid">
+                
+                <div class="oop-card">
+                    <h4>Abstraction</h4>
+                    <p><code>public abstract class User</code> defines the foundational schema (ID, name, email, department) and contract methods without direct instantiation.</p>
+                    <div class="code-snippet">
+                        <code>public abstract boolean canBeAssignedTickets();</code>
+                    </div>
+                </div>
+
+                <div class="oop-card">
+                    <h4>Inheritance</h4>
+                    <p>Concrete entity subclasses (<code>Admin</code>, <code>SupportEngineer</code>, <code>Developer</code>, <code>Employee</code>) extend <code>User</code> using JPA Single-Table inheritance.</p>
+                    <div class="code-snippet">
+                        <code>class SupportEngineer extends User { ... }</code>
+                    </div>
+                </div>
+
+                <div class="oop-card">
+                    <h4>Polymorphism</h4>
+                    <p>Subclasses override base methods polymorphically. The business logic executes assignment and troubleshooting checks dynamically.</p>
+                    <div class="code-snippet">
+                        <code>user.canTroubleshoot() // dynamic dispatch</code>
+                    </div>
+                </div>
+
+                <div class="oop-card">
+                    <h4>Encapsulation</h4>
+                    <p><code>Ticket</code> encapsulates its lifecycle state. Properties are mutated strictly through methods like <code>ticket.assignTo()</code>, which enforce invariants and record audit history.</p>
+                    <div class="code-snippet">
+                        <code>ticket.updateStatus(newStatus, user);</code>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+
+    <!-- ==============================================================
+         MODAL 1: CREATE TICKET (Clean Jira Style)
+         ============================================================== -->
+    <div id="new-ticket-modal" class="modal-overlay hidden">
+        <div class="modal-window">
+            <div class="modal-header">
+                <h3>Create Support Ticket</h3>
+                <button class="modal-close" onclick="closeModal('new-ticket-modal')">&times;</button>
+            </div>
+            
+            <form id="new-ticket-form" onsubmit="handleCreateTicket(event)" class="modal-body">
+                <div class="form-group">
+                    <label>Summary <span class="req">*</span></label>
+                    <input type="text" id="new-title" class="form-input" required placeholder="e.g. Database connection failing on quarterly report batch" minlength="5">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Priority <span class="req">*</span></label>
+                        <select id="new-priority" class="form-select" required>
+                            <option value="LOW">Low</option>
+                            <option value="MEDIUM" selected>Medium</option>
+                            <option value="HIGH">High</option>
+                            <option value="CRITICAL">Critical</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Category <span class="req">*</span></label>
+                        <select id="new-category" class="form-select" required>
+                            <option value="AUTHENTICATION">Authentication</option>
+                            <option value="DATABASE">Database</option>
+                            <option value="NETWORK">Network</option>
+                            <option value="APPLICATION_BUG">Application Bug</option>
+                            <option value="HARDWARE">Hardware</option>
+                            <option value="ACCESS_REQUEST">Access Request</option>
+                            <option value="OTHER">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Description <span class="req">*</span></label>
+                    <textarea id="new-description" class="form-textarea" rows="4" required placeholder="Provide steps, error codes, and context..." minlength="10"></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" onclick="closeModal('new-ticket-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==============================================================
+         MODAL 2: TICKET DETAIL VIEW (Clean Jira/Zendesk Detail View)
+         ============================================================== -->
+    <div id="ticket-detail-modal" class="modal-overlay hidden">
+        <div class="modal-window modal-wide">
+            
+            <div class="ticket-view-header">
+                <div class="ticket-header-meta">
+                    <span id="detail-number" class="ticket-key">SD-1024</span>
+                    <span id="detail-priority-badge" class="badge-priority">HIGH</span>
+                    <span id="detail-status-pill" class="badge-status">OPEN</span>
+                </div>
+                <button class="modal-close" onclick="closeModal('ticket-detail-modal')">&times;</button>
+            </div>
+
+            <div class="ticket-view-body">
+                
+                <!-- Main Content Pane -->
+                <div class="ticket-left-pane">
+                    
+                    <h2 id="detail-title" class="ticket-title">Ticket Title</h2>
+
+                    <!-- Description Box -->
+                    <div class="ticket-section">
+                        <div class="section-label">Description</div>
+                        <div id="detail-description" class="ticket-desc-text"></div>
+                    </div>
+
+                    <!-- Troubleshooting & Root Cause Box (Jira Post-Mortem Style) -->
+                    <div id="detail-resolution-box" class="ticket-section rca-section hidden">
+                        <div class="section-label rca-label-title">
+                            <span>Root Cause Analysis & Resolution</span>
+                            <span id="detail-res-loggedby" class="rca-logged-meta"></span>
+                        </div>
+                        
+                        <div class="rca-entry">
+                            <strong>Problem Summary:</strong>
+                            <div id="detail-res-problem"></div>
+                        </div>
+
+                        <div class="rca-entry">
+                            <strong>Investigation Trail:</strong>
+                            <pre id="detail-res-steps" class="code-log"></pre>
+                        </div>
+
+                        <div class="rca-entry">
+                            <strong>Root Cause:</strong>
+                            <div id="detail-res-rootcause" class="text-bold"></div>
+                        </div>
+
+                        <div class="rca-entry">
+                            <strong>Resolution Applied:</strong>
+                            <div id="detail-res-applied"></div>
+                        </div>
+                    </div>
+
+                    <!-- Linked QA Bug Box -->
+                    <div id="detail-bug-box" class="ticket-section bug-section hidden">
+                        <div class="section-label bug-label-title">
+                            <span>Linked QA Bug (<span id="detail-bug-key">BUG-302</span>)</span>
+                            <span id="detail-bug-severity" class="badge-priority">CRITICAL</span>
+                        </div>
+                        
+                        <div class="rca-entry">
+                            <strong>Steps to Reproduce:</strong>
+                            <pre id="detail-bug-steps" class="code-log"></pre>
+                        </div>
+
+                        <div class="bug-split-row">
+                            <div>
+                                <strong>Expected:</strong>
+                                <div id="detail-bug-expected"></div>
+                            </div>
+                            <div>
+                                <strong>Actual:</strong>
+                                <div id="detail-bug-actual"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Activity Tabs & Comments -->
+                    <div class="ticket-section">
+                        <div class="section-label">Activity & Comments</div>
+                        
+                        <div id="detail-comments-list" class="comments-list">
+                            <!-- Populated dynamically -->
+                        </div>
+
+                        <form id="add-comment-form" onsubmit="handleAddComment(event)" class="add-comment-form">
+                            <textarea id="comment-message" class="form-textarea" rows="2" placeholder="Add a comment or internal note..." required></textarea>
+                            <div class="comment-bar">
+                                <label class="checkbox-inline">
+                                    <input type="checkbox" id="comment-internal"> Internal support note
+                                </label>
+                                <button type="submit" class="btn btn-default btn-sm">Save Comment</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Audit Trail -->
+                    <div class="ticket-section">
+                        <div class="section-label">History</div>
+                        <div id="detail-history-list" class="history-list"></div>
+                    </div>
+
+                </div>
+
+                <!-- Right Sidebar Details Pane -->
+                <div class="ticket-right-pane">
+                    
+                    <div class="sidebar-box">
+                        <div class="sidebar-heading">Details</div>
+                        
+                        <div class="sidebar-row">
+                            <label>Status</label>
+                            <select id="detail-status-select" onchange="handleStatusChange(event)" class="form-select select-sm">
+                                <option value="OPEN">Open</option>
+                                <option value="IN_PROGRESS">In Progress</option>
+                                <option value="WAITING_FOR_USER">Waiting for User</option>
+                                <option value="RESOLVED">Resolved</option>
+                                <option value="CLOSED">Closed</option>
+                            </select>
+                        </div>
+
+                        <div class="sidebar-row">
+                            <label>Assignee</label>
+                            <select id="detail-assign-select" onchange="handleAssignChange(event)" class="form-select select-sm">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+
+                        <div class="sidebar-row">
+                            <label>Reporter</label>
+                            <span id="detail-requester" class="sidebar-val">Reporter Name</span>
+                        </div>
+
+                        <div class="sidebar-row">
+                            <label>Category</label>
+                            <span id="detail-category" class="sidebar-val">Database</span>
+                        </div>
+
+                        <div class="sidebar-row">
+                            <label>Created</label>
+                            <span id="detail-created" class="sidebar-val">Date</span>
+                        </div>
+                    </div>
+
+                    <div class="sidebar-box">
+                        <div class="sidebar-heading">Actions</div>
+                        <div class="action-buttons-stack">
+                            <button class="btn btn-default btn-sm btn-block" onclick="openTroubleshootModal()">Document Resolution (RCA)</button>
+                            <button class="btn btn-default btn-sm btn-block" onclick="openConvertBugModal()">Escalate to QA Bug</button>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- ==============================================================
+         MODAL 3: LOG TROUBLESHOOTING (RCA Form)
+         ============================================================== -->
+    <div id="troubleshoot-modal" class="modal-overlay hidden">
+        <div class="modal-window">
+            <div class="modal-header">
+                <h3>Document Technical Resolution</h3>
+                <button class="modal-close" onclick="closeModal('troubleshoot-modal')">&times;</button>
+            </div>
+            
+            <form id="troubleshoot-form" onsubmit="handleDocumentResolution(event)" class="modal-body">
+                <div class="form-group">
+                    <label>Problem Summary <span class="req">*</span></label>
+                    <input type="text" id="ts-problem" class="form-input" required placeholder="e.g. HikariCP connection pool exhausted on reporting node">
+                </div>
+
+                <div class="form-group">
+                    <label>Investigation Steps <span class="req">*</span></label>
+                    <textarea id="ts-steps" class="form-textarea code-font" rows="3" required placeholder="1. Inspected application logs&#10;2. Verified database connection pool state&#10;3. Identified unclosed Hibernate Session..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Root Cause Analysis <span class="req">*</span></label>
+                    <textarea id="ts-rootcause" class="form-textarea" rows="2" required placeholder="e.g. Missing @Transactional boundary resulted in leaked JDBC connections."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Resolution Applied <span class="req">*</span></label>
+                    <textarea id="ts-resolution" class="form-textarea" rows="2" required placeholder="e.g. Increased pool size to 50 and deployed try-with-resources patch in PR #892."></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" onclick="closeModal('troubleshoot-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save & Mark Resolved</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==============================================================
+         MODAL 4: CONVERT TICKET TO BUG
+         ============================================================== -->
+    <div id="convert-bug-modal" class="modal-overlay hidden">
+        <div class="modal-window">
+            <div class="modal-header">
+                <h3>Escalate Incident to QA Bug</h3>
+                <button class="modal-close" onclick="closeModal('convert-bug-modal')">&times;</button>
+            </div>
+            
+            <form id="convert-bug-form" onsubmit="handleConvertBug(event)" class="modal-body">
+                <div class="form-group">
+                    <label>Bug Title <span class="req">*</span></label>
+                    <input type="text" id="bug-title" class="form-input" required placeholder="e.g. NullPointerException during token refresh in AuthTokenService">
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Severity <span class="req">*</span></label>
+                        <select id="bug-severity" class="form-select" required>
+                            <option value="CRITICAL">Critical</option>
+                            <option value="MAJOR" selected>Major</option>
+                            <option value="MINOR">Minor</option>
+                            <option value="TRIVIAL">Trivial</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Environment <span class="req">*</span></label>
+                        <select id="bug-env" class="form-select" required>
+                            <option value="Production">Production</option>
+                            <option value="Staging">Staging</option>
+                            <option value="QA">QA</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Assign Developer</label>
+                    <select id="bug-dev-select" class="form-select">
+                        <!-- Populated dynamically -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Steps to Reproduce <span class="req">*</span></label>
+                    <textarea id="bug-steps" class="form-textarea code-font" rows="3" required placeholder="1. Request password reset&#10;2. Set new password&#10;3. Attempt login..."></textarea>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Expected Behavior <span class="req">*</span></label>
+                        <input type="text" id="bug-expected" class="form-input" required placeholder="e.g. User logs in successfully">
+                    </div>
+                    <div class="form-group">
+                        <label>Actual Behavior <span class="req">*</span></label>
+                        <input type="text" id="bug-actual" class="form-input" required placeholder="e.g. HTTP 500 Internal Server Error">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Stack Trace / Debug Log</label>
+                    <textarea id="bug-stacktrace" class="form-textarea code-font" rows="2" placeholder="java.lang.NullPointerException at com.servicedesk..."></textarea>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" onclick="closeModal('convert-bug-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create Bug</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast Container -->
+    <div id="toast-box" class="toast-box"></div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
