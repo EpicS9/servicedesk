@@ -1,5 +1,6 @@
 /* =============================================================================
    IT Service Desk — Clean Enterprise UI (Atlassian / Jira Inspired)
+   Responsive for Desktop, Tablet, and Mobile
    ============================================================================= */
 
 :root {
@@ -46,6 +47,11 @@
     padding: 0;
 }
 
+html, body {
+    width: 100%;
+    min-height: 100%;
+}
+
 body {
     background-color: var(--bg-page);
     color: var(--text-primary);
@@ -53,13 +59,14 @@ body {
     font-size: 14px;
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
 }
 
 /* 1. Header (Atlassian Style) */
 .app-header {
     background-color: var(--navy-header);
     color: #ffffff;
-    height: 52px;
+    min-height: 52px;
     padding: 0 20px;
     display: flex;
     align-items: center;
@@ -68,12 +75,14 @@ body {
     position: sticky;
     top: 0;
     z-index: 100;
+    gap: 12px;
 }
 
 .header-left {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 16px;
+    min-width: 0;
 }
 
 .app-logo {
@@ -83,6 +92,8 @@ body {
     font-weight: 700;
     font-size: 16px;
     letter-spacing: -0.2px;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .project-tag {
@@ -93,11 +104,14 @@ body {
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .main-nav {
     display: flex;
     gap: 4px;
+    min-width: 0;
 }
 
 .nav-link {
@@ -111,6 +125,7 @@ body {
     cursor: pointer;
     font-family: inherit;
     transition: all 0.15s ease;
+    white-space: nowrap;
 }
 
 .nav-link:hover {
@@ -127,7 +142,8 @@ body {
 .header-right {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
+    flex-shrink: 0;
 }
 
 .header-search {
@@ -151,11 +167,12 @@ body {
     width: 220px;
     font-family: inherit;
     color: var(--text-primary);
+    transition: width 0.2s ease;
 }
 
 .header-search input:focus {
     outline: none;
-    width: 280px;
+    width: 260px;
     box-shadow: 0 0 0 2px #4c9aff;
 }
 
@@ -168,6 +185,7 @@ body {
 .persona-label {
     font-size: 12px;
     color: rgba(255, 255, 255, 0.8);
+    white-space: nowrap;
 }
 
 .persona-picker select {
@@ -178,6 +196,8 @@ body {
     font-size: 12px;
     font-family: inherit;
     color: var(--text-primary);
+    max-width: 140px;
+    text-overflow: ellipsis;
 }
 
 /* Buttons */
@@ -194,6 +214,8 @@ body {
     justify-content: center;
     text-decoration: none;
     transition: background 0.15s ease;
+    min-height: 32px;
+    white-space: nowrap;
 }
 
 .btn-primary {
@@ -218,6 +240,7 @@ body {
 .btn-sm {
     padding: 4px 10px;
     font-size: 12px;
+    min-height: 28px;
 }
 
 .btn-block {
@@ -228,7 +251,8 @@ body {
 .app-body {
     max-width: 1320px;
     margin: 20px auto;
-    padding: 0 20px;
+    padding: 0 20px 40px 20px;
+    width: 100%;
 }
 
 .tab-content {
@@ -265,12 +289,15 @@ body {
     justify-content: space-between;
     align-items: center;
     border-bottom: none;
+    gap: 10px;
+    flex-wrap: wrap;
 }
 
 .filter-controls {
     display: flex;
     align-items: center;
     gap: 12px;
+    flex-wrap: wrap;
 }
 
 .filter-item {
@@ -283,6 +310,7 @@ body {
 .filter-item label {
     font-weight: 500;
     color: var(--text-secondary);
+    white-space: nowrap;
 }
 
 .filter-item select, .form-select {
@@ -293,6 +321,7 @@ body {
     font-size: 13px;
     color: var(--text-primary);
     font-family: inherit;
+    min-height: 32px;
 }
 
 .filter-item select:focus, .form-select:focus, .form-input:focus, .form-textarea:focus {
@@ -306,19 +335,23 @@ body {
     display: flex;
     align-items: center;
     gap: 12px;
+    margin-left: auto;
 }
 
 .text-muted {
     color: var(--text-secondary);
     font-size: 12px;
+    white-space: nowrap;
 }
 
-/* Data Tables (Jira / GitHub style) */
+/* Data Tables (Jira / GitHub style with responsive horizontal scrolling) */
 .table-card {
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 0 0 4px 4px;
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
 }
 
 .grid-table {
@@ -326,6 +359,7 @@ body {
     border-collapse: collapse;
     font-size: 13px;
     text-align: left;
+    white-space: nowrap;
 }
 
 .grid-table thead {
@@ -381,6 +415,7 @@ body {
     border-radius: 3px;
     text-transform: uppercase;
     display: inline-block;
+    white-space: nowrap;
 }
 
 .status-OPEN { background: var(--status-blue-bg); color: var(--status-blue-text); }
@@ -396,13 +431,14 @@ body {
     padding: 1px 6px;
     border-radius: 3px;
     margin-left: 6px;
+    white-space: nowrap;
 }
 
 /* 4. KPI Cards Row */
 .kpi-row {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
     margin-bottom: 20px;
 }
 
@@ -425,6 +461,7 @@ body {
     font-weight: 500;
     color: var(--text-secondary);
     margin-top: 4px;
+    white-space: nowrap;
 }
 
 .text-blue { color: var(--primary-blue); }
@@ -444,6 +481,7 @@ body {
     border: 1px solid var(--border-color);
     border-radius: 4px;
     padding: 18px;
+    overflow-x: auto;
 }
 
 .panel-head {
@@ -466,6 +504,7 @@ body {
     width: 100%;
     border-collapse: collapse;
     font-size: 13px;
+    white-space: nowrap;
 }
 
 .report-table th {
@@ -505,6 +544,7 @@ body {
     padding: 2px 6px;
     border-radius: 3px;
     color: var(--text-primary);
+    word-break: break-all;
 }
 
 /* 5. SQL Reference Grid */
@@ -526,6 +566,7 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10px;
+    gap: 8px;
 }
 
 .sql-box-header h4 {
@@ -540,6 +581,7 @@ body {
     padding: 2px 6px;
     border-radius: 3px;
     font-weight: 600;
+    white-space: nowrap;
 }
 
 .sql-box pre {
@@ -595,6 +637,7 @@ body {
     font-family: var(--font-mono);
     font-size: 11px;
     color: var(--text-primary);
+    overflow-x: auto;
 }
 
 /* 7. Clean Modals & Popups */
@@ -609,6 +652,7 @@ body {
     align-items: center;
     justify-content: center;
     z-index: 1000;
+    padding: 12px;
 }
 
 .modal-window {
@@ -647,6 +691,7 @@ body {
     font-size: 22px;
     color: var(--text-secondary);
     cursor: pointer;
+    padding: 2px 6px;
 }
 
 .modal-body {
@@ -686,6 +731,7 @@ body {
     font-size: 13px;
     font-family: inherit;
     color: var(--text-primary);
+    width: 100%;
 }
 
 .code-font {
@@ -710,12 +756,14 @@ body {
     justify-content: space-between;
     align-items: center;
     background: #fafbfc;
+    flex-shrink: 0;
 }
 
 .ticket-header-meta {
     display: flex;
     align-items: center;
     gap: 12px;
+    flex-wrap: wrap;
 }
 
 .ticket-view-body {
@@ -789,6 +837,8 @@ body {
     justify-content: space-between;
     color: #006644;
     border-bottom: 1px solid #abf5d1;
+    flex-wrap: wrap;
+    gap: 4px;
 }
 
 .rca-logged-meta {
@@ -819,6 +869,7 @@ body {
     font-size: 12px;
     color: #091e42;
     white-space: pre-wrap;
+    overflow-x: auto;
 }
 
 /* QA Bug Box */
@@ -834,6 +885,8 @@ body {
     justify-content: space-between;
     color: #825c00;
     border-bottom: 1px solid #ffe380;
+    flex-wrap: wrap;
+    gap: 4px;
 }
 
 .bug-split-row {
@@ -871,6 +924,8 @@ body {
     font-size: 11px;
     color: var(--text-secondary);
     margin-bottom: 4px;
+    flex-wrap: wrap;
+    gap: 4px;
 }
 
 .comment-bar {
@@ -878,6 +933,8 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-top: 6px;
+    flex-wrap: wrap;
+    gap: 8px;
 }
 
 .checkbox-inline {
@@ -951,6 +1008,7 @@ body {
     flex-direction: column;
     gap: 8px;
     z-index: 2000;
+    max-width: 90vw;
 }
 
 .toast {
@@ -967,4 +1025,155 @@ body {
 
 .hidden {
     display: none !important;
+}
+
+/* =============================================================================
+   10. Clean Non-Destructive Responsive Media Queries (Mobile & Tablet)
+   ============================================================================= */
+
+/* Medium Screens & Tablets (<= 992px) */
+@media (max-width: 992px) {
+    .app-header {
+        padding: 8px 14px;
+        flex-wrap: wrap;
+        height: auto;
+    }
+
+    .header-left {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .main-nav {
+        order: 3;
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        padding-bottom: 2px;
+    }
+
+    .main-nav::-webkit-scrollbar {
+        display: none;
+    }
+
+    .header-right {
+        order: 2;
+        width: 100%;
+        justify-content: space-between;
+        padding-top: 4px;
+    }
+
+    .header-search {
+        flex: 1;
+    }
+
+    .header-search input {
+        width: 100%;
+    }
+
+    .header-search input:focus {
+        width: 100%;
+    }
+
+    .reports-grid, .sql-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .app-body {
+        padding: 0 12px 30px 12px;
+        margin: 14px auto;
+    }
+}
+
+/* Phones & Small Tablets (<= 768px) */
+@media (max-width: 768px) {
+    .kpi-row {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 8px;
+    }
+
+    .queue-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filter-controls {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+    }
+
+    .filter-item {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .filter-item select {
+        flex: 1;
+    }
+
+    .toolbar-right {
+        width: 100%;
+        justify-content: space-between;
+        margin-left: 0;
+        padding-top: 6px;
+        border-top: 1px solid var(--border-color);
+    }
+
+    /* Modal wide collapses to single scrollable pane on mobile */
+    .modal-wide {
+        max-width: 96vw;
+        height: 92vh;
+    }
+
+    .ticket-view-body {
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+    }
+
+    .ticket-left-pane {
+        padding: 16px;
+        overflow-y: visible;
+    }
+
+    .ticket-right-pane {
+        border-left: none;
+        border-top: 1px solid var(--border-color);
+        padding: 16px;
+        background: #f4f5f7;
+        overflow-y: visible;
+    }
+
+    .form-row, .bug-split-row {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Small Phone Screens (<= 480px) */
+@media (max-width: 480px) {
+    .kpi-row {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .kpi-num {
+        font-size: 20px;
+    }
+
+    .kpi-title {
+        font-size: 11px;
+    }
+
+    .project-tag {
+        display: none;
+    }
+
+    .persona-label {
+        display: none;
+    }
+
+    .persona-picker select {
+        max-width: 110px;
+    }
 }
