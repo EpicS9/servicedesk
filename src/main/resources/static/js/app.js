@@ -1,6 +1,7 @@
 /**
  * IT Service Desk — Client Application
  * Enterprise Incident & Support Management
+ * Supports Desktop, Tablet, and Mobile devices
  */
 
 let allUsers = [];
@@ -28,16 +29,24 @@ if (document.readyState === 'loading') {
     initApp();
 }
 
-// 1. Navigation Links
+// 1. Navigation Links (Sync desktop and mobile nav bars)
 function setupNavLinks() {
-    const links = document.querySelectorAll('.nav-link');
-    links.forEach(btn => {
+    const allNavButtons = document.querySelectorAll('.nav-link');
+    allNavButtons.forEach(btn => {
         btn.addEventListener('click', () => {
-            links.forEach(l => l.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(p => p.classList.remove('active'));
-
-            btn.classList.add('active');
             const targetId = btn.getAttribute('data-tab');
+
+            // Sync active state across all nav buttons (both desktop and mobile)
+            allNavButtons.forEach(b => {
+                if (b.getAttribute('data-tab') === targetId) {
+                    b.classList.add('active');
+                } else {
+                    b.classList.remove('active');
+                }
+            });
+
+            // Switch tab view
+            document.querySelectorAll('.tab-content').forEach(p => p.classList.remove('active'));
             const targetPane = document.getElementById(targetId);
             if (targetPane) {
                 targetPane.classList.add('active');
@@ -57,21 +66,28 @@ async function loadUsers() {
         if (!res.ok) throw new Error('Users API returned ' + res.status);
         allUsers = await res.json();
 
-        const userSelect = document.getElementById('active-user-select');
-        if (userSelect && Array.isArray(allUsers)) {
-            userSelect.innerHTML = '';
-            allUsers.forEach(u => {
-                const opt = document.createElement('option');
-                opt.value = u.id;
-                opt.textContent = `${u.name} (${formatRole(u.role)})`;
-                userSelect.appendChild(opt);
-            });
+        // Populate both desktop and mobile user selects
+        const userSelects = [
+            document.getElementById('active-user-select'),
+            document.getElementById('active-user-select-mobile')
+        ];
 
-            const defaultUser = allUsers.find(u => u.role === 'SUPPORT_ENGINEER') || allUsers[0];
-            if (defaultUser) {
-                userSelect.value = defaultUser.id;
+        userSelects.forEach(selectEl => {
+            if (selectEl && Array.isArray(allUsers)) {
+                selectEl.innerHTML = '';
+                allUsers.forEach(u => {
+                    const opt = document.createElement('option');
+                    opt.value = u.id;
+                    opt.textContent = `${u.name} (${formatRole(u.role)})`;
+                    selectEl.appendChild(opt);
+                });
+
+                const defaultUser = allUsers.find(u => u.role === 'SUPPORT_ENGINEER') || allUsers[0];
+                if (defaultUser) {
+                    selectEl.value = defaultUser.id;
+                }
             }
-        }
+        });
 
         // Fetch assignable users
         const assignRes = await fetch('/api/users/assignable');
@@ -97,6 +113,13 @@ async function loadUsers() {
 
 function handleUserChange(e) {
     const selectedId = parseInt(e.target.value);
+    
+    // Sync both selects
+    const desktopSel = document.getElementById('active-user-select');
+    const mobileSel = document.getElementById('active-user-select-mobile');
+    if (desktopSel) desktopSel.value = selectedId;
+    if (mobileSel) mobileSel.value = selectedId;
+
     const user = allUsers.find(u => u.id === selectedId);
     if (user) {
         showToast(`Acting as ${user.name} (${formatRole(user.role)})`);
@@ -107,8 +130,11 @@ function handleUserChange(e) {
 }
 
 function getActiveUserId() {
-    const el = document.getElementById('active-user-select');
-    return el && el.value ? el.value : '1';
+    const desktopSel = document.getElementById('active-user-select');
+    const mobileSel = document.getElementById('active-user-select-mobile');
+    if (desktopSel && desktopSel.value) return desktopSel.value;
+    if (mobileSel && mobileSel.value) return mobileSel.value;
+    return '1';
 }
 
 function formatRole(roleStr) {
@@ -120,13 +146,18 @@ function formatRole(roleStr) {
 async function loadTickets() {
     const statusEl = document.getElementById('filter-status');
     const priorityEl = document.getElementById('filter-priority');
-    const searchEl = document.getElementById('global-search');
+    const desktopSearch = document.getElementById('global-search');
+    const mobileSearch = document.getElementById('global-search-mobile');
     const countLabel = document.getElementById('ticket-count-label');
     const tbody = document.getElementById('tickets-table-body');
 
     const status = statusEl ? statusEl.value : '';
     const priority = priorityEl ? priorityEl.value : '';
-    const search = searchEl ? searchEl.value.trim() : '';
+    
+    // Check either desktop or mobile search query
+    let search = '';
+    if (desktopSearch && desktopSearch.value) search = desktopSearch.value.trim();
+    if (!search && mobileSearch && mobileSearch.value) search = mobileSearch.value.trim();
 
     const params = new URLSearchParams();
     if (status) params.append('status', status);
@@ -224,6 +255,12 @@ function handleSearch() {
     searchTimeout = setTimeout(() => {
         loadTickets();
     }, 250);
+}
+
+function handleMobileSearch(e) {
+    const desktopSearch = document.getElementById('global-search');
+    if (desktopSearch) desktopSearch.value = e.target.value;
+    handleSearch();
 }
 
 // 4. Reports & Workload Tab
@@ -732,6 +769,12 @@ function openModal(id) {
 function closeModal(id) {
     const el = document.getElementById(id);
     if (el) el.classList.add('hidden');
+}
+
+function handleBackdropClick(e, id) {
+    if (e.target.classList.contains('modal-overlay')) {
+        closeModal(id);
+    }
 }
 
 function showToast(msg) {
