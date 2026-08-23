@@ -1,5 +1,12 @@
 # 🛠️ ServiceDesk — Enterprise IT Support & Incident Management System
 
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-Render-46E3B7?style=for-the-badge&logo=render&logoColor=white)](https://servicedesk-to0k.onrender.com/)
+[![Java 21](https://img.shields.io/badge/Java-21-orange?style=for-the-badge&logo=openjdk&logoColor=white)](https://adoptium.net/)
+[![Spring Boot 3.3.4](https://img.shields.io/badge/Spring%20Boot-3.3.4-6DB33F?style=for-the-badge&logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
+[![Build & Tests](https://img.shields.io/badge/CI%2FCD-Passing-brightgreen?style=for-the-badge&logo=githubactions&logoColor=white)](https://github.com/EpicS9/servicedesk/actions)
+
+> 🌐 **Live Production Application:** **[https://servicedesk-to0k.onrender.com/](https://servicedesk-to0k.onrender.com/)**
+
 A production-ready, full-stack enterprise incident and ticket management application built with **Java 21, Spring Boot 3, Spring Data JPA, PostgreSQL / H2, JUnit 5 / Mockito, and GitHub Actions CI/CD**.
 
 This project is purposefully architected to demonstrate **Java OOP, REST API Development, Relational SQL Analytics, Root Cause Troubleshooting, QA Bug Tracking, Automated Testing, and CI/CD Automation**.
