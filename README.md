@@ -159,7 +159,6 @@ servicedesk/
 │   │       └── static/               # Interactive Web UI (HTML, CSS, JS)
 │   └── test/
 │       └── java/com/servicedesk/     # JUnit 5 & Mockito Test Suite
-├── INTERVIEW_STUDY_GUIDE.md          # Technical Interview & JD Concept Mapping
 ├── pom.xml                           # Maven Dependencies & Build Configuration
 └── README.md
 ```
